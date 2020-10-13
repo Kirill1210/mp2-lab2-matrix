@@ -8,8 +8,8 @@ int main(int argc, char* argv[])
   TMatrix<int> a(5), b(5), c(5);
   int i, j;
   cout << "TEST MATRIX" << endl;
-  for (i = 0; i < 5; i++)
-    for (j = 0; j < 5; j++)
+  for (i = 0; i < 4 ; i++)
+    for (j = 0; j < 6 ; j++)
     {
       a[i][j] = i;
       b[i][j] = i;
