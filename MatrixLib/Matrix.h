@@ -11,7 +11,7 @@ class TMatrix : public TVector<TVector<ValType> >
 private:
   int mSize;
 public:
-  TMatrix(int s);
+  TMatrix(int s = 10);
   TMatrix(const TMatrix& mt);                    // копирование
   TMatrix(const TVector<TVector<ValType> >& mt); // преобразование типа
   ~TMatrix();
@@ -46,10 +46,16 @@ template<class ValType>
 inline TMatrix<ValType>::TMatrix(int s) : TVector<TVector <ValType> >(s)
 {
   if (s < 0 || s > MAX_MATRIX_SIZE)
-  {
+  { 
     throw "Error";
   }
   mSize = s;
+
+  for (int i = 0; i < s; i++)
+  {
+    this->pVector[i] = TVector<ValType>(s - i);
+  }
+
 }
 
 template <class ValType> // конструктор копирования
@@ -66,6 +72,10 @@ inline TMatrix<ValType>::TMatrix(const TVector<TVector<ValType> >& mt) : TVector
 template<class ValType>
 inline TMatrix<ValType>::~TMatrix()
 {
+  if (mSize != 0)
+  {
+    mSize = NULL;
+  }
 }
 
 template <class ValType> // сравнение
@@ -145,12 +155,31 @@ inline TMatrix<ValType> TMatrix<ValType>::operator-(const TMatrix<ValType>& mt)
 template<class ValType>
 inline TMatrix<ValType> TMatrix<ValType>::operator*(const TMatrix& mt)
 {
-  TMatrix<ValType> tmp(*this);
-  for (int i = 0; i < this->Size; i++)
+  if (this->GetSize() != mt.Size)
   {
-    tmp.pVector[i] = tmp.pVector[i] * mt.pVector[i];
+    throw "Error";
   }
-  return tmp;
+
+  TMatrix<ValType> tmp(*this);
+  TMatrix<ValType> res(this->Size);
+  
+  int row = this->Size;
+  int col = this->Size;
+
+
+  for (int i = 0; i < row; i++) 
+  {
+    for (int j = 0; j < col; j++)
+    {
+      res.pVector[i][j] = 0;
+      for (int k = 0; k < col; k++)
+      {
+        res.pVector[i][j] += (tmp.pVector[i][k] * mt.pVector[k][j]);
+      }
+      col--;
+    }
+  }
+  return res;
 }
 
 #endif
